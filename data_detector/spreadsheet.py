@@ -25,25 +25,43 @@ class Spreadsheet(list):
             return cls.parse_xl(filepath)
 
     @classmethod
-    def parse_csv(cls, filepath):
+    def parse_csv(cls, filepath_or_fileobj):
         """
         Use csv module
         """
+        if isinstance(filepath_or_fileobj, str):
+            with open(filepath_or_fileobj) as stream:
+                return cls._parse_csv_stream(stream)
+        elif hasattr(filepath_or_fileobj, 'read'):
+            return cls._parse_csv_stream(filepath_or_fileobj)
+        else:
+            raise ValueError("The argument must be a filepath or fileobj with `read` function")
+
+    @classmethod
+    def _parse_csv_stream(cls, stream):
         cells = []
-        with open(filepath) as f:
-            rows = csv.reader(f)
-            for row in rows:
-                cells.append(row)
+        rows = csv.reader(stream)
+        for row in rows:
+            cells.append(row)
         return [Spreadsheet(cells)]
 
     @classmethod
-    def parse_xl(cls, filepath):
+    def parse_xl(cls, filepath_or_fileobj):
         """
         Use xlrd module
         """
-        wb = xlrd.open_workbook(filepath)
+        if isinstance(filepath_or_fileobj, str):
+            wb = xlrd.open_workbook(filepath_or_fileobj)
+        elif hasattr(filepath_or_fileobj, 'read'):
+            wb = xlrd.open_workbook(file_contents=filepath_or_fileobj.read())
+        else:
+            raise ValueError("The argument must be a filepath or fileobj with `read` function")
+        return cls._parse_workbook(wb)
+
+    @classmethod
+    def _parse_workbook(cls, workbook):
         spreadsheets = []
-        for sheet in wb.sheets():
+        for sheet in workbook.sheets():
             cells = []
             for row in sheet.get_rows():
                 vals = [cell.value for cell in row]

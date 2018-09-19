@@ -22,3 +22,14 @@ class DataDetectorTestCase(TestCase):
         test_file2 = os.path.join(self.PWD, "test2.xlsx")
         res = dd.detect(test_file2)
         ok_(res[0] < 0.5)
+
+    def test_detect_with_bytes_stream(self):
+        dd = DataDetector()
+        test_file1 = os.path.join(self.PWD, "test1.xlsx")
+        with open(test_file1, "rb") as f:
+            res = dd.detect(f, 'xlsx')
+        ok_(res[0] > 0.5)
+        test_file2 = os.path.join(self.PWD, "test2.xlsx")
+        with open(test_file2, "rb") as f:
+            res = dd.detect(f, 'xlsx')
+        ok_(res[0] < 0.5)
