@@ -51,9 +51,9 @@ class Spreadsheet(list):
         Use xlrd module
         """
         if isinstance(filepath_or_fileobj, str):
-            wb = xlrd.open_workbook(filepath_or_fileobj)
+            wb = xlrd.open_workbook(filepath_or_fileobj, ragged_rows=True)
         elif hasattr(filepath_or_fileobj, 'read'):
-            wb = xlrd.open_workbook(file_contents=filepath_or_fileobj.read())
+            wb = xlrd.open_workbook(file_contents=filepath_or_fileobj.read(), ragged_rows=True)
         else:
             raise ValueError("The argument must be a filepath or fileobj with `read` function")
         return cls._parse_workbook(wb)
