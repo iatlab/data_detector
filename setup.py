@@ -11,10 +11,13 @@ setup(
     author_email = "mpkato@acm.org",
     license     = "MIT License",
     url = "https://github.com/iatlab/data_detector",
+    setup_requires = [
+        'numpy' # this required by scikit-learn
+    ],
     install_requires = [
         'scikit-learn',
         'xlrd',
         'mojimoji',
     ],
-    tests_require=['nose'],
 )
+
