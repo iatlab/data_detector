@@ -19,5 +19,8 @@ setup(
         'xlrd',
         'mojimoji',
     ],
+    package_data = {
+        'data_detector': ['*.pkl'],
+    }
 )
 
