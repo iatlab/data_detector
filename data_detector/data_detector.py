@@ -42,7 +42,7 @@ class DataDetector(object):
                              "but the scaler expects {}"
                              .format(model_dim, scaler_dim))
 
-    def detect(self, filepath_or_fileobj, content_type=None):
+    def detect(self, filepath_or_fileobj, content_type=None, truncate_rows=None):
         """
         Given a spreadsheet filepath or bytes stream,
         return 1-d array of which dimension corresponds to the data probability
@@ -52,16 +52,16 @@ class DataDetector(object):
         """
         if content_type:
             if content_type in ('xls', 'xlsx'):
-                spreadsheets = Spreadsheet.parse_xl(filepath_or_fileobj)
+                spreadsheets = Spreadsheet.parse_xl(filepath_or_fileobj, truncate_rows)
             elif content_type in ('csv', ):
-                spreadsheets = Spreadsheet.parse_csv(filepath_or_fileobj)
+                spreadsheets = Spreadsheet.parse_csv(filepath_or_fileobj, truncate_rows)
             else:
                 raise ValueError("content_type must be one of 'xls', 'xlsx', or 'csv'")
         else:
             # expect filepath if content_type is None
             if not isinstance(filepath_or_fileobj, str):
                 raise ValueError("content_type must be specified if the input is not filepath")
-            spreadsheets = Spreadsheet.parse(filepath_or_fileobj)
+            spreadsheets = Spreadsheet.parse(filepath_or_fileobj, truncate_rows)
 
         features = [FeatureFactory.extract_features(spreadsheet)
                     for spreadsheet in spreadsheets]
